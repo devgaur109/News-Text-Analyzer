@@ -1,0 +1,10 @@
+numpy
+pandas
+requests
+json
+exa_py
+concurrent.futures
+newspaper3k
+flask
+nltk
+lxml[html_clean]
