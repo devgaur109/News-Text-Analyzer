@@ -68,8 +68,8 @@ The credibility calculation process involves several steps:
 
 5. **Access the Application**:
    Open your web browser and navigate to `http://127.0.0.1:5000/` to access the News Text Analyzer interface.
-
-   Developed By-
-   Dev Gaur
-   Harsh Agarwal
+  
+   Developed By-  
+   1. Dev Gaur  
+   2. Harsh Agarwal  
    (BITS Pilani - Hyderabad Campus)
