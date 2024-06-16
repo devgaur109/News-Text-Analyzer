@@ -71,5 +71,7 @@ The credibility calculation process involves several steps:
   
    Developed By-  
    1. Dev Gaur  
-   2. Harsh Agarwal  
+   2. Harsh Agarwal
+
+       
    (BITS Pilani - Hyderabad Campus)
