@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Text Analyzer Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000000;
+            color: #FFFFFF;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Ensure full viewport height */
+        }
+        .overlay-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            width: 100%;
+        }
+        .overlay {
+            background-color: rgba(0,0,0,0);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            transform: scale(1.2); /* Scale horizontally by 1.2x */
+            transform-origin: center;
+            transition: transform 0.3s ease;
+            width: 80%; /* Increase width by 1.2x */
+            max-width: 1400px; /* Limit maximum width */
+            height: auto; /* Allow height to adjust based on content */
+            overflow: auto; /* Enable scrolling if content exceeds height */
+        }
+        h1 {
+            text-align: center;
+            color: #FFFFFF;
+            font-size: 4em;
+            letter-spacing: 0.05em;
+            font-family: 'Bebas Neue', sans-serif;
+            margin-bottom: 20px;
+            position: relative; /* Ensure relative positioning for pseudo-element */
+        }
+        h1::after {
+            content: '';
+            display: block;
+            position: absolute;
+            bottom: -5px; /* Adjust the position of the underline */
+            left: 0;
+            width: 100%;
+            height: 2px; /* Thickness of the underline */
+            background-color: #1E90FF; /* Dodger blue color */
+        }
+        .credibility-score {
+            font-size: 4.5em; /* Larger font size for credibility score */
+            font-family: 'Calibri', sans-serif;
+            margin-bottom: 10px;
+            text-align: left; /* Left-align the credibility score */
+        }
+        .cred_label {
+            margin-bottom: -5px;
+            font-size: 2em;
+            font-family: 'Calibri',sans-serif;
+        }
+        .progress-bar {
+            width: 100%; /* Full width of container */
+            height: 20px; /* Height of the progress bar */
+            background: linear-gradient(to bottom, #1a1a1a, #0f0f0f); /* Background color of the progress bar */
+            border-radius: 10px; /* Rounded corners */
+            overflow: hidden; /* Ensure overflow is hidden */
+            margin-bottom: 20px; /* Spacing below the credibility score */
+            margin-top: 20px;
+        }
+        .progress {
+            height: 100%; /* Full height to fill progress bar */
+            width: 0; /* Initially zero width */
+            background-color: #FF0000; /* Red as initial color */
+            animation: fillWidth 2s forwards; /* Animation to fill width */
+        }
+        .sources {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align sources to the left */
+            width: 100%; /* Full width */
+            margin-top: 20px; /* Space between credibility score and sources */
+        }
+        .sources-label {
+            font-weight: 500;
+            margin-top: 25px;
+            color: #CCCCCC;
+            margin-bottom: 10px;
+            align-self: flex-start;
+            font-size: 2em; /* Match font size */
+            font-family: 'Calibri', sans-serif; /* Match font style */
+            color: #FFFFFF; /* Match color */
+        }
+        .source-item {
+            position: relative; /* Required for pseudo-element positioning */
+            padding: 15px;
+            background-color: #000000; /* Black background */
+            color: #FFFFFF; /* White text */
+            border-radius: 10px; /* Rounded corners for text fields */
+            margin-top: 10px;
+            width: 100%; /* Adjusted width */
+            box-sizing: border-box;
+            font-size: 1.2em;
+            text-decoration: none; /* Remove default underline */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+        .source-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            border: 1px solid #1E90FF; /* Blue border */
+            border-top: none; /* No border on the top */
+            border-radius: 0 0 10px 10px; /* Match border-radius of the parent */
+            pointer-events: none; /* Ensure it doesn't interfere with text selection */
+            box-sizing: border-box; /* Ensure proper sizing */
+        }
+        .try-more-btn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            border: none;
+            background-color: #1E90FF;
+            font-family: 'Calibri', sans-serif;
+            color: #FFFFFF;
+            font-size: 1.4em;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .try-more-btn:hover {
+            background-color: #FFFFFF;
+            color: #1E90FF;
+        }
+        .bullet-points {
+            padding-left: 20px; /* Indent the bullet points */
+            list-style-type: disc; /* Set the bullet point style */
+        }
+
+        @keyframes fillWidth {
+            from {
+                width: 0;
+                background-color: #FF0000; /* Red as initial color */
+            }
+            to {
+                width: var(--progress-width, 0%);
+                background-color: var(--progress-color, #FF0000); /* Dynamic color based on progress */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay-container">
+        <div class="overlay">
+            <h1>News Text Analyzer</h1>
+            <label class="cred_label">Credibility Score</label>
+            <div class="credibility-score" id="credibility-score"></div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="sources">
+                <label class="sources-label">Relevant Sources..</label>
+                <a href="#" class="source-item" id="source-1" target="_blank"></a>
+                <a href="#" class="source-item" id="source-2" target="_blank"></a>
+                <label class="sources-label">Related Facts at a Glance..</label>
+                <ul class="source-item bullet-points" id="source-3"></ul>
+            </div>
+            <button class="try-more-btn" onclick="window.location.href='/'"><strong>Try More</strong></button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const credibilityScore = parseFloat(params.get('num_letters')) || 0;
+            const credibilityScoreElement = document.getElementById('credibility-score');
+            const credibilityLabelElement = document.createElement('label');
+            credibilityLabelElement.classList.add('cred_label');
+
+            if (credibilityScore <= 50) {
+                credibilityLabelElement.textContent = 'Fake news';
+            } else if (credibilityScore <= 60) {
+                credibilityLabelElement.textContent = 'Some facts are correct';
+            } else {
+                credibilityLabelElement.textContent = 'Correct news';
+            }
+
+            credibilityLabelElement.style.fontFamily = 'Calibri, sans-serif';
+            credibilityScoreElement.textContent = credibilityScore + ' %';
+            credibilityScoreElement.parentNode.insertBefore(credibilityLabelElement, credibilityScoreElement.nextSibling);
+
+            document.getElementById('credibility-score').textContent = credibilityScore + '%';
+
+            // Set progress bar width based on credibility score
+            const progressBar = document.getElementById('progress');
+            progressBar.style.setProperty('--progress-width', credibilityScore + '%');
+
+            // Calculate and set dynamic color based on progress
+            const color = calculateColor(credibilityScore);
+            progressBar.style.setProperty('--progress-color', color);
+
+            // Populate sources if available
+            const source1 = params.get('source1') || '';
+            const source2 = params.get('source2') || '';
+            const source3 = params.get('source3') || '';
+
+            if (source1) {
+                const source1Element = document.getElementById('source-1');
+                source1Element.textContent = source1;
+                source1Element.href = source1;
+                source1Element.style.display = 'block';
+            }
+
+            if (source2) {
+                const source2Element = document.getElementById('source-2');
+                source2Element.textContent = source2;
+                source2Element.href = source2;
+                source2Element.style.display = 'block';
+            }
+
+            if (source3) {
+                const source3Element = document.getElementById('source-3');
+                const sentences = source3.split('.'); // Split source3 into sentences
+                source3Element.innerHTML = '';
+                sentences.forEach(sentence => {
+                    const li = document.createElement('li');
+                    li.textContent = sentence.trim(); // Trim any leading/trailing spaces
+                    if (li.textContent) { // Only add non-empty sentences
+                        source3Element.appendChild(li);
+                    }
+                });
+                source3Element.style.display = 'block';
+            }
+        });
+
+        function calculateColor(score) {
+            const hue = (score / 100) * 120; // Map score to a hue value (0-120)
+            return `hsl(${hue}, 100%, 50%)`;
+        }
+    </script>
+</body>
+</html>
